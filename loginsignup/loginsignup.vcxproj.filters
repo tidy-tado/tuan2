@@ -39,6 +39,12 @@
     <ClInclude Include="loginsignup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="list1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxChatDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="loginsignup.cpp">
@@ -54,6 +60,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SignUpDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="list1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxChatDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

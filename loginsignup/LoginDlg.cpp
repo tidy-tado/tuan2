@@ -1,238 +1,195 @@
+// LoginDlg.cpp : implementation file
+#include "pch.h"
+#include "framework.h"
+#include "loginsignup.h"
+#include "LoginDlg.h"
+#include "afxdialogex.h"
+#include "BoxChatDlg.h"
 
-	// loginsignupDlg.cpp : implementation file
-	//
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
-	#include "pch.h"
-	#include "framework.h"
-	#include "loginsignup.h"
-	#include "LoginDlg.h"
-	#include "afxdialogex.h"
+// CAboutDlg dialog used for App About
+class CAboutDlg : public CDialogEx
+{
+public:
+    CAboutDlg();
 
+#ifdef AFX_DESIGN_TIME
+    enum { IDD = IDD_ABOUTBOX };
+#endif
 
-	#ifdef _DEBUG
-	#define new DEBUG_NEW
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);
 
-	#endif
+protected:
+    DECLARE_MESSAGE_MAP()
+};
 
+CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
+{
+}
 
-	// CAboutDlg dialog used for App About
+void CAboutDlg::DoDataExchange(CDataExchange* pDX)
+{
+    CDialogEx::DoDataExchange(pDX);
+}
 
-	class CAboutDlg : public CDialogEx
-	{
-	public:
-		CAboutDlg();
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+END_MESSAGE_MAP()
 
-	// Dialog Data
-	#ifdef AFX_DESIGN_TIME
-		enum { IDD = IDD_ABOUTBOX };
-	#endif
+// CLoginDlg dialog
+CLoginDlg::CLoginDlg(CWnd* pParent /*=nullptr*/)
+    : CDialogEx(IDD_LOGIN_DIALOG, pParent)
+    , m_loginSuccess(FALSE)
+{
+    m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
 
-		protected:
-		virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+void CLoginDlg::DoDataExchange(CDataExchange* pDX)
+{
+    CDialogEx::DoDataExchange(pDX);
+    DDX_Text(pDX, IDC_USERNAME, m_username);
+    DDX_Text(pDX, IDC_PASSWORD, m_password);
+}
 
-	// Implementation
-	protected:
-		DECLARE_MESSAGE_MAP()
-	public:
-		afx_msg void OnBnClickedButtonLogin();
-	};
+BEGIN_MESSAGE_MAP(CLoginDlg, CDialogEx)
+    ON_WM_SYSCOMMAND()
+    ON_WM_PAINT()
+    ON_WM_QUERYDRAGICON()
+    ON_BN_CLICKED(IDCANCEL, &CLoginDlg::OnBnClickedCancel)
+    ON_BN_CLICKED(IDOK, &CLoginDlg::OnBnClickedOk)
+END_MESSAGE_MAP()
 
-	CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
-	{
-	}
+BOOL CLoginDlg::OnInitDialog()
+{
+    CDialogEx::OnInitDialog();
 
-	void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-	{
-		CDialogEx::DoDataExchange(pDX);
-	}
+    ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
+    ASSERT(IDM_ABOUTBOX < 0xF000);
 
-	BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-	
-	END_MESSAGE_MAP()
+    CMenu* pSysMenu = GetSystemMenu(FALSE);
+    if (pSysMenu != nullptr)
+    {
+        BOOL bNameValid;
+        CString strAboutMenu;
+        bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
+        ASSERT(bNameValid);
+        if (!strAboutMenu.IsEmpty())
+        {
+            pSysMenu->AppendMenu(MF_SEPARATOR);
+            pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
+        }
+    }
 
+    SetIcon(m_hIcon, TRUE);
+    SetIcon(m_hIcon, FALSE);
 
-	// CLoginDlg dialog
+    return TRUE;
+}
 
+void CLoginDlg::OnSysCommand(UINT nID, LPARAM lParam)
+{
+    if ((nID & 0xFFF0) == IDM_ABOUTBOX)
+    {
+        CAboutDlg dlgAbout;
+        dlgAbout.DoModal();
+    }
+    else
+    {
+        CDialogEx::OnSysCommand(nID, lParam);
+    }
+}
 
+void CLoginDlg::OnPaint()
+{
+    if (IsIconic())
+    {
+        CPaintDC dc(this);
+        SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
+        int cxIcon = GetSystemMetrics(SM_CXICON);
+        int cyIcon = GetSystemMetrics(SM_CYICON);
+        CRect rect;
+        GetClientRect(&rect);
+        int x = (rect.Width() - cxIcon + 1) / 2;
+        int y = (rect.Height() - cyIcon + 1) / 2;
+        dc.DrawIcon(x, y, m_hIcon);
+    }
+    else
+    {
+        CDialogEx::OnPaint();
+    }
+}
 
-	CLoginDlg::CLoginDlg(CWnd* pParent /*=nullptr*/)
-		: CDialogEx(IDD_LOGIN_DIALOG, pParent)
-	{
-		m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	}
+HCURSOR CLoginDlg::OnQueryDragIcon()
+{
+    return static_cast<HCURSOR>(m_hIcon);
+}
 
-	void CLoginDlg::DoDataExchange(CDataExchange* pDX)
-	{
-		CDialogEx::DoDataExchange(pDX);// sua ID 
-		DDX_Text(pDX, IDC_USERNAME, m_username);
-		DDX_Text(pDX, IDC_PASSWORD, m_password);
-	}
+void CLoginDlg::OnBnClickedCancel()
+{
+    CDialogEx::OnCancel();
+}
 
-	BEGIN_MESSAGE_MAP(CLoginDlg, CDialogEx)
-		ON_WM_SYSCOMMAND()
-		ON_WM_PAINT()
-		ON_WM_QUERYDRAGICON()
-		ON_BN_CLICKED(IDCANCEL, &CLoginDlg::OnBnClickedCancel)
-		ON_BN_CLICKED(IDOK, &CLoginDlg::OnBnClickedOk)
-	END_MESSAGE_MAP()
+void CLoginDlg::OnBnClickedOk()
+{
+    UpdateData(TRUE);
+    char UsernameFromFile[20] = { 0 }; // Khoi tao mang bang 0
+    char PasswordFromFile[20] = { 0 }; // Khoi tao mang bang 0
+    bool ValidLogin = false;
 
+    if (m_username.IsEmpty())
+    {
+        AfxMessageBox(_T("Vui long nhap tai khoan"));
+        return;
+    }
+    if (m_password.IsEmpty())
+    {
+        AfxMessageBox(_T("Vui long nhap mat khau"));
+        return;
+    }
 
-	// CloginsignupDlg message handlers
+    try {
+        FILE* fCheck = nullptr;
+        errno_t err = fopen_s(&fCheck, "accounts.txt", "r");
+        if (err != 0 || fCheck == nullptr) {
+            AfxMessageBox(_T("Khong mo duoc file accounts.txt"));
+            return;
+        }
 
-	BOOL CLoginDlg::OnInitDialog()
-	{
-		CDialogEx::OnInitDialog();
+        CT2A convUser(m_username);
+        CT2A convPass(m_password);
+        const char* usernameInput = convUser;
+        const char* passwordInput = convPass;
 
-		// Add "About..." menu item to system menu.
+        while (fscanf_s(fCheck, "%19s %19s",
+            UsernameFromFile, (unsigned)_countof(UsernameFromFile),
+            PasswordFromFile, (unsigned)_countof(PasswordFromFile)) == 2)
+        {
+            if (strcmp(usernameInput, UsernameFromFile) == 0 &&
+                strcmp(passwordInput, PasswordFromFile) == 0)
+            {
+                ValidLogin = true;
+                break;
+            }
+        }
 
-		// IDM_ABOUTBOX must be in the system command range.
-		ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
-		ASSERT(IDM_ABOUTBOX < 0xF000);
+        fclose(fCheck);
 
-		CMenu* pSysMenu = GetSystemMenu(FALSE);
-		if (pSysMenu != nullptr)
-		{
-			BOOL bNameValid;
-			CString strAboutMenu;
-			bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
-			ASSERT(bNameValid);
-			if (!strAboutMenu.IsEmpty())
-			{
-				pSysMenu->AppendMenu(MF_SEPARATOR);
-				pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
-			}
-		}
-
-		// Set the icon for this dialog.  The framework does this automatically
-		//  when the application's main window is not a dialog
-		SetIcon(m_hIcon, TRUE);			// Set big icon
-		SetIcon(m_hIcon, FALSE);		// Set small icon
-
-		// TODO: Add extra initialization here
-
-		return TRUE;  // return TRUE  unless you set the focus to a control
-	}
-
-	void CLoginDlg::OnSysCommand(UINT nID, LPARAM lParam)
-	{
-		if ((nID & 0xFFF0) == IDM_ABOUTBOX)
-		{
-			CAboutDlg dlgAbout;
-			dlgAbout.DoModal();
-		}
-		else
-		{
-			CDialogEx::OnSysCommand(nID, lParam);
-		}
-	}
-
-	// If you add a minimize button to your dialog, you will need the code below
-	//  to draw the icon.  For MFC applications using the document/view model,
-	//  this is automatically done for you by the framework.
-
-	void CLoginDlg::OnPaint()
-	{
-		if (IsIconic())
-		{
-			CPaintDC dc(this); // device context for painting
-
-			SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
-
-			// Center icon in client rectangle
-			int cxIcon = GetSystemMetrics(SM_CXICON);
-			int cyIcon = GetSystemMetrics(SM_CYICON);
-			CRect rect;
-			GetClientRect(&rect);
-			int x = (rect.Width() - cxIcon + 1) / 2;
-			int y = (rect.Height() - cyIcon + 1) / 2;
-
-			// Draw the icon
-			dc.DrawIcon(x, y, m_hIcon);
-		}
-		else
-		{
-			CDialogEx::OnPaint();
-		}
-	}
-
-	// The system calls this function to obtain the cursor to display while the user drags
-	//  the minimized window.
-	HCURSOR CLoginDlg::OnQueryDragIcon()
-	{
-		return static_cast<HCURSOR>(m_hIcon);
-	}
-
-
-	void CLoginDlg::OnBnClickedCancel()
-	{
-		// TODO: Add your control notification handler code here
-		CDialogEx::OnCancel();
-	}
-
-	void CLoginDlg::OnBnClickedOk()
-	{
-		UpdateData(TRUE); // lay du lieu tu edit box vao m_username, m_password
-
-		char UsernameFromFile[20], PasswordFromFile[20];
-		bool ValidLogin = false;
-
-		if (m_username.IsEmpty())
-		{
-			AfxMessageBox(_T("Vui long nhap tai khoan"));
-			return;
-		}
-		if (m_password.IsEmpty())
-		{
-			AfxMessageBox(_T("Vui long nhap mat khau"));
-			return;
-		}
-
-		try {
-			FILE* fCheck = nullptr;
-			errno_t err = fopen_s(&fCheck, "E:\\accounts.txt", "r");
-			if (err != 0 || fCheck == nullptr) {
-				AfxMessageBox(_T("Khong mo duoc file accounts.txt"));
-				return;
-			}
-
-			// Chuyen String qua char*
-			CT2A convUser(m_username);
-			CT2A convPass(m_password);
-			const char* usernameInput = convUser;
-			const char* passwordInput = convPass;
-
-			// Doc tung dong login trong file
-			while (fscanf_s(fCheck, "%19s %19s",
-				UsernameFromFile, (unsigned)_countof(UsernameFromFile),
-				PasswordFromFile, (unsigned)_countof(PasswordFromFile)) == 2)
-			{
-				if (strcmp(usernameInput, UsernameFromFile) == 0 &&
-					strcmp(passwordInput, PasswordFromFile) == 0)
-				{
-					ValidLogin = true;
-					break;
-				}
-			}
-
-			fclose(fCheck);
-
-			if (ValidLogin)
-			{
-				AfxMessageBox(_T("Dang nhap thanh cong!"));
-				CDialogEx::OnOK(); // Chi dong login thanh cong
-			}
-			else
-			{
-				AfxMessageBox(_T("Thong tin dang nhap khong chinh xac."));
-			}
-		}
-		catch (...)
-		{
-			AfxMessageBox(_T("Dang nhap khong thanh cong"));
-		}
-	}
-
-
-
-
-
+        if (ValidLogin)
+        {
+            m_loginSuccess = TRUE;
+            AfxMessageBox(_T("Dang nhap thanh cong!"));
+            CDialogEx::OnOK();
+        }
+        else
+        {
+            AfxMessageBox(_T("Thong tin dang nhap khong chinh xac."));
+        }
+    }
+    catch (...)
+    {
+        AfxMessageBox(_T("Dang nhap khong thanh cong"));
+    }
+}

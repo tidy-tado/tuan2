@@ -5,8 +5,9 @@
 #include "loginsignup.h"
 #include "afxdialogex.h"
 #include "MainDlg.h"
-#include "SignUpDlg.h"   
-#include "LoginDlg.h" 
+#include "SignUpDlg.h"
+#include "LoginDlg.h"
+#include "BoxChatDlg.h"
 
 // MainDlg dialog
 
@@ -44,6 +45,11 @@ void MainDlg::OnBnClickedButtonSignup()
 
 void MainDlg::OnBnClickedButtonLogin()
 {
-	CLoginDlg dlgLogin;   // mo form login
-	dlgLogin.DoModal();
+    CLoginDlg dlgLogin; //mo form login
+    if (dlgLogin.DoModal() == IDOK && dlgLogin.m_loginSuccess)
+    {
+        CBoxChatDlg dlgChat;
+        dlgChat.m_username = dlgLogin.m_username;
+        dlgChat.DoModal();
+    }
 }
